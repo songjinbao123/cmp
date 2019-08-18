@@ -9,6 +9,7 @@ import com.mysiteforme.admin.base.MySysUser;
 import com.mysiteforme.admin.entity.Role;
 import com.mysiteforme.admin.entity.User;
 import com.mysiteforme.admin.entity.VO.ShowMenu;
+import com.mysiteforme.admin.service.UserService;
 import com.mysiteforme.admin.util.Constants;
 import com.mysiteforme.admin.util.LayerData;
 import com.mysiteforme.admin.util.RestResponse;
@@ -17,12 +18,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +63,19 @@ public class UserConteroller extends BaseController{
         Page<User> userPage = userService.selectPage(new Page<>(page,limit),userEntityWrapper);
         userLayerData.setCount(userPage.getTotal());
         userLayerData.setData(userPage.getRecords());
+        return  userLayerData;
+    }
+
+//    @RequiresPermissions("sys:user:list")
+    @GetMapping("findUserById")
+    @ResponseBody
+    public LayerData<User> findUserById(Long id){
+        User user = userService.findUserById(id);
+        List<User> list = new ArrayList<>();
+        list.add(user);
+        LayerData<User> userLayerData = new LayerData<>();
+        userLayerData.setCount(1);
+        userLayerData.setData(list);
         return  userLayerData;
     }
 
